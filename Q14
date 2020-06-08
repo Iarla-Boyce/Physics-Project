@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+x=np.array([5,10,15,20,25])
+y=np.array([0.2,0.5,0.8,1.0,1.3])
+yerror = np.array([0.05,0.05,0.05,0.05,0.05])
+count=0
+minchi2=10000
+minslope=0.0
+start=0
+stop=1
+step=0.001
+bestfit=[]
+print('My estimate: 0.05\n')
+
+for slope in np.arange(start, stop, step):
+  count=0
+  for g in x:
+    bestfit.append(((float(y[count])-(slope*g))**2)/(yerror[count])**2)
+    count+=1
+  chi2=np.sum(bestfit)
+  bestfit=[]
+  if(chi2<minchi2):
+    minchi2=chi2
+    minslope=slope
+print('Optimised slope:',minslope,'\n')
+fx=minslope*x
+
+gx=0.05*x
+print('Difference between my estimate and true value:',(minslope-0.05))
+print('\nAccurate slope:Red\nGuessed slope: Green')
+
+plt.errorbar(x,y,yerror,fmt='bo')
+plt.plot(x,fx,'r-')
+plt.plot(x,gx,'g-')
+plt.show()
