@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-f = open("Galaxy1.txt" , "r")
+f = open("galaxy.txt" , "r")
 f.readline()
 radius=[]
 velocity=[]
@@ -43,7 +43,7 @@ velUncertainty=(np.sum(velocityUnitUncertainty)/(52))**0.5
 for slope in np.arange(start, stop, step):
   count=0
   for i in radius:
-    best_p.append( ((velocity[count]-(  (np.power(((float(G)) * ((float(line.split("\t")[4]))+(4*pi*slope*(CRadius**2)*((float(line.split("\t")[0]))-(CRadius*(math.atan(float(line.split("\t")[0])/CRadius)))))) / (float(line.split("\t")[0]))),1/2))  ))**2) / ((velocityUncertainty)**2) )
+    best_p.append( ((velocity[count]-(  (np.power(((float(G)) * ((float(line.split("\t")[4]))+(4*pi*slope*(CRadius**2)*((float(line.split("\t")[0]))-(CRadius*(math.atan(float(line.split("\t")[0])/CRadius)))))) / (float(line.split("\t")[0]))),1/2))  ))**2) / ((velUncertainty)**2) )
     count+=1
   chi2=np.sum(best_p)
   best_p=[]
@@ -51,7 +51,7 @@ for slope in np.arange(start, stop, step):
     minchi2=chi2
     minslope=slope
 print("Optimised slope value:",minslope,"\n")
-g.close()
+t.close()
 w=open("galaxy.txt" , "r")
 w.readline()
 for line in w:
