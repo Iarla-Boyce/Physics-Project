@@ -1,0 +1,72 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+f = open("Galaxy1.txt" , "r")
+f.readline()
+radius=[]
+velocity=[]
+deltaradius=[]
+deltavelocity=[]
+mass=[]
+velocity1=[]
+darkmatter=[]
+velocityUncertainty=[]
+velocityUnitUncertainty=[]
+velocity2=[]
+best_p=[]
+G=4.3*(10**-6)
+p=100*(10**6)
+CRadius=1.87
+pi=3.14
+start=50*(10**6)
+stop=100*(10**6)
+step=1*(10**6)
+minchi2=10*(10**46)
+
+for line in f:
+  radius.append(float(line.split('\t')[0]))
+  velocity.append(float(line.split('\t')[1]))
+  deltaradius.append(float(line.split('\t')[2]))
+  deltavelocity.append(float(line.split('\t')[3]))
+  mass.append(float(line.split('\t')[4]))
+  velocity1.append((((float(G)) * (float(line.split('\t')[4]))) / (float(line.split('\t')[0])))**(1/2))
+  darkmatter.append((((float(G)) * (float(line.split('\t')[5]))) / (float(line.split('\t')[0])))**(1/2))
+
+f.close()
+t=open("galaxy.txt" , "r")
+t.readline()
+for line in t:
+  velMean=(np.sum(velocity)/53)
+  velocityUnitUncertainty.append(((float(line.split("\t")[1]))-velMean)**2)
+velUncertainty=(np.sum(velocityUnitUncertainty)/(52))**0.5
+
+for slope in np.arange(start, stop, step):
+  count=0
+  for i in radius:
+    best_p.append( ((velocity[count]-(  (np.power(((float(G)) * ((float(line.split("\t")[4]))+(4*pi*slope*(CRadius**2)*((float(line.split("\t")[0]))-(CRadius*(math.atan(float(line.split("\t")[0])/CRadius)))))) / (float(line.split("\t")[0]))),1/2))  ))**2) / ((velocityUncertainty)**2) )
+    count+=1
+  chi2=np.sum(best_p)
+  best_p=[]
+  if(chi2<minchi2):
+    minchi2=chi2
+    minslope=slope
+print("Optimised slope value:",minslope,"\n")
+g.close()
+w=open("galaxy.txt" , "r")
+w.readline()
+for line in w:
+  velocity2.append(np.power(((float(G)) * ((float(line.split("\t")[4]))+(4*pi*minslope*(CRadius**2)*((float(line.split("\t")[0]))-(CRadius*(math.atan(float(line.split("\t")[0])/CRadius)))))) / (float(line.split("\t")[0]))),1/2))
+
+
+x=np.array(radius)
+y=np.array(velocity)
+z=np.array(velocity1)
+q=np.array(darkmatter)
+
+plt.plot(x,y, label='Measured Velocity')
+plt.plot(x,z, label='Velocity of Visible Mass')
+plt.plot(x,q, label= 'Velocity of Combined Mass')
+plt.xlabel('Radius(kpc)')
+plt.ylabel('Velocity(km/s)')
+plt.legend()
+plt.show()
